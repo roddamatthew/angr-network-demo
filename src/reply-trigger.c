@@ -2,13 +2,13 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include "networking.h"
 
-#define MAX_PKT_LEN 32
 int verbose = 0; // Global verbose level
 
 int main(int argc, char** argv) {
     const int port = 8000;
-    const char* ip = "localhost";
+    const char* ip = "127.0.0.1";
     
     // Recieve verbosity level from cmdline
     if (argc > 1) {
@@ -29,18 +29,20 @@ int main(int argc, char** argv) {
     }
 
     // Make buffers to store packet data
-    char send_buf[MAX_PKT_LEN];
-    char recv_buf[MAX_PKT_LEN];
+    char* send_buf = (char*)calloc(MAX_PKT_LEN, sizeof(char));
+    char* recv_buf = (char*)calloc(MAX_PKT_LEN, sizeof(char));
 
     // Send "HelloSecretString"
-    strcpy()
+    const char* msg = "HelloSecretString\n";
+    strcpy(send_buf, msg);
+    send_packet(sock, send_buf, strlen(msg));
 
     // Recieve response
+    recv_packet(sock, recv_buf);
 
-    // If response == "SuperSecretSecret"
-        // print "Success"
-    // else
-        // print "Failure"
+    const char* expected = "SuperSecretSecret\n";
+    if (strcmp(recv_buf, expected) == 0) puts("Success");
+    else puts("Failure");
     
     return 0;
 }
