@@ -14,16 +14,13 @@ SRC_FILES = $(SRC_DIR)/networking.c $(SRC_DIR)/reply-trigger.c
 # Output binary
 TARGET = $(BUILD_DIR)/main
 
-# Libraries for Winsock
-LIBS = -lws2_32
-
 # Default target
 all: $(TARGET)
 
 # Link and compile
 $(TARGET): $(SRC_FILES)
 	@mkdir -p $(BUILD_DIR)
-	$(CC) $(CFLAGS) $(SRC_FILES) -o $(TARGET) $(LIBS)
+	$(CC) $(CFLAGS) $(SRC_FILES) -o $(TARGET)
 
 # Clean build artifacts
 clean:
