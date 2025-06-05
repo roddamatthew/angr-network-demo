@@ -51,3 +51,5 @@ Mkfile.old
 dkms.conf
 
 .venv/
+.pytest_cache/
+__*__
