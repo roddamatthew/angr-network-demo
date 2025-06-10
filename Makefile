@@ -8,19 +8,28 @@ CFLAGS = -Wall -Wextra -O2
 SRC_DIR = src
 BUILD_DIR = build
 
-# Source files
-SRC_FILES = $(SRC_DIR)/networking.c $(SRC_DIR)/reply-trigger.c
+# Source files for main binary
+MAIN_SRC_FILES = $(SRC_DIR)/networking.c $(SRC_DIR)/reply-trigger.c
 
-# Output binary
-TARGET = $(BUILD_DIR)/main
+# Source files for main-ip binary
+MAIN_IP_SRC_FILES = $(SRC_DIR)/networking.c $(SRC_DIR)/reply-trigger-ip.c
 
-# Default target
-all: $(TARGET)
+# Output binaries
+TARGET_MAIN = $(BUILD_DIR)/main
+TARGET_MAIN_IP = $(BUILD_DIR)/main-ip
 
-# Link and compile
-$(TARGET): $(SRC_FILES)
+# Default target - build both binaries
+all: $(TARGET_MAIN) $(TARGET_MAIN_IP)
+
+# Link and compile main binary
+$(TARGET_MAIN): $(MAIN_SRC_FILES)
 	@mkdir -p $(BUILD_DIR)
-	$(CC) $(CFLAGS) $(SRC_FILES) -o $(TARGET)
+	$(CC) $(CFLAGS) $(MAIN_SRC_FILES) -o $(TARGET_MAIN)
+
+# Link and compile main-ip binary
+$(TARGET_MAIN_IP): $(MAIN_IP_SRC_FILES)
+	@mkdir -p $(BUILD_DIR)
+	$(CC) $(CFLAGS) $(MAIN_IP_SRC_FILES) -o $(TARGET_MAIN_IP)
 
 # Clean build artifacts
 clean:

@@ -5,10 +5,74 @@
 #include <arpa/inet.h>           // for inet_addr(), htons()
 #include <sys/socket.h>          // for socket functions
 #include <netinet/in.h>          // for sockaddr_in
-#include <errno.h>               // for errno
+#include <errno.h>               // for errno4
+#include <ctype.h>
 #include "networking.h"
 
 extern int verbose;
+
+int is_valid_ip(const char *ip) {
+    if (!ip) return 0;
+    
+    char *ip_copy = malloc(strlen(ip) + 1);
+    if (!ip_copy) return 0;
+    strcpy(ip_copy, ip);
+    
+    char *token;
+    int count = 0;
+    
+    // Split by dots
+    token = strtok(ip_copy, ".");
+    while (token != NULL) {
+        count++;
+        
+        // Check if we have more than 4 octets
+        if (count > 4) {
+            free(ip_copy);
+            return 0;
+        }
+        
+        // Check if token is empty
+        if (strlen(token) == 0) {
+            free(ip_copy);
+            return 0;
+        }
+        
+        // Check if token has more than 3 digits
+        if (strlen(token) > 3) {
+            free(ip_copy);
+            return 0;
+        }
+        
+        // Check if all characters are digits
+        for (int i = 0; i < strlen(token); i++) {
+            if (!isdigit(token[i])) {
+                free(ip_copy);
+                return 0;
+            }
+        }
+        
+        // Check for leading zeros (except for "0" itself)
+        if (strlen(token) > 1 && token[0] == '0') {
+            free(ip_copy);
+            return 0;
+        }
+        
+        // Convert to integer and check range
+        int num = atoi(token);
+        if (num < 0 || num > 255) {
+            free(ip_copy);
+            return 0;
+        }
+        
+        token = strtok(NULL, ".");
+    }
+    
+    free(ip_copy);
+    
+    // Must have exactly 4 octets
+    return (count == 4);
+}
 
 // Attempt connection to the given IP and port
 int connect_to_ip(const char* ip, int port) {
