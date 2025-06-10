@@ -11,10 +11,30 @@
 
 extern int verbose;
 
+#include <stdio.h>
+#include <string.h>
+#include <stdlib.h>
+#include <ctype.h>
+
 int is_valid_ip(const char *ip) {
     if (!ip) return 0;
     
-    char *ip_copy = malloc(strlen(ip) + 1);
+    int len = strlen(ip);
+    if (len == 0) return 0;
+    
+    // Check for leading or trailing dots
+    if (ip[0] == '.' || ip[len-1] == '.') {
+        return 0;
+    }
+    
+    // Check for consecutive dots
+    for (int i = 0; i < len - 1; i++) {
+        if (ip[i] == '.' && ip[i+1] == '.') {
+            return 0;
+        }
+    }
+    
+    char *ip_copy = malloc(len + 1);
     if (!ip_copy) return 0;
     strcpy(ip_copy, ip);
     
@@ -32,7 +52,7 @@ int is_valid_ip(const char *ip) {
             return 0;
         }
         
-        // Check if token is empty
+        // Check if token is empty (this shouldn't happen now, but keep for safety)
         if (strlen(token) == 0) {
             free(ip_copy);
             return 0;
